@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>MOKAF7</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap');
+    
+    :root {
+      --primary-color: #f0e1ba;
+      --secondary-color: #daca85;
+      --accent-color: #9b59b6;
+      --light-color: #ecf0f1;
+      --highlight: #fdfdfd;
+      --dark-overlay: rgba(255, 239, 187, 0.87);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      cursor: none !important;
+    }
+    
+    body {
+      font-family: 'Tajawal', sans-serif;
+      color: var(--light-color);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+      background-image: url('msl7.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+    
+    /* مؤشر الماوس المخصص */
+    #custom-cursor {
+      position: fixed;
+      width: 40px;
+      height: 40px;
+      background-image: url('hand-cursor.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      pointer-events: none;
+      z-index: 99999;
+      transition: transform 0.05s ease;
+    }
+    
+    #custom-cursor.hover {
+      background-image: url('hand-pointer.png');
+      transform: scale(1.2);
+    }
+    
+    #custom-cursor.click {
+      background-image: url('hand-click.png');
+      transform: scale(0.9);
+    }
+
+    .container {
+      width: 90%;
+      max-width: 550px;
+      height: auto;
+      aspect-ratio: 1/1;
+      position: relative;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+      transition: transform 0.6s cubic-bezier(0.3, 0.7, 0.4, 1.5), width 0.6s, height 0.6s;
+      background: radial-gradient(circle, var(--dark-overlay) 0%, rgba(95, 79, 74, 0.781) 100%);
+      backdrop-filter: blur(10px);
+      transform-style: preserve-3d;
+      perspective: 1000px;
+      margin: 20px;
+    }
+    
+    
+    
+    .power-line {
+      position: absolute;
+      height: 3px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2));
+      transform-origin: 0 0;
+      display: none;
+      z-index: 100;
+    }
+    
+    /* زر البلايستيشن */
+    .play-button {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      background: rgb(218, 202, 158);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+    
+    .play-button::before {
+      content: "";
+      width: 0;
+      height: 0;
+      border-top: 15px solid transparent;
+      border-bottom: 15px solid transparent;
+      border-left: 25px solid white;
+      margin-left: 5px;
+    }
+    
+    .play-button:hover {
+      transform: scale(1.1);
+      background: rgb(153, 75, 153);
+    }
+    
+   
+    
+    .hoop-target {
+      position: absolute;
+      width: 80px;
+      height: 10px;
+      top: 86px;
+      left: 60px;
+      background: rgba(255, 0, 0, 0);
+      z-index: 51;
+    }
+    
+    /* تفاعل الماوس مع مناطق الدائرة */
+    .container.hover-top {
+      transform: perspective(1000px) rotateX(8deg);
+    }
+    
+    .container.hover-bottom {
+      transform: perspective(1000px) rotateX(-8deg);
+    }
+    
+    .container.hover-left {
+      transform: perspective(1000px) rotateY(-8deg);
+    }
+    
+    .container.hover-right {
+      transform: perspective(1000px) rotateY(8deg);
+    }
+
+    /* تفاعلات خاصة للدائرة */
+    .container:hover {
+      box-shadow: 0 0 80px rgba(0, 0, 0, 0.4);
+    }
+    
+    .container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at center, rgba(221, 203, 144, 0.1) 0%, rgba(155, 89, 182, 0.05) 40%, transparent 70%);
+      z-index: 0;
+      border-radius: 50%;
+    }
+    
+    .content-wrapper {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 85%;
+      height: 85%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 2;
+      transition: opacity 0.5s ease;
+    }
+    
+    .profile-section {
+      width: 100%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .profile-img-container {
+      width: 160px;
+      height: 160px;
+      margin-bottom: 10px;
+      position: relative;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.2);
+      box-shadow: 
+        0 10px 20px rgba(0, 0, 0, 0.2),
+        inset 0 0 15px rgba(236, 1, 1, 0.2);
+      padding: 5px;
+      overflow: hidden;
+      border: 2px solid rgba(214, 181, 33, 0.5);
+    }
+    
+    .profile-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid var(--secondary-color);
+      transition: transform 0.3s ease;
+    }
+
+    .profile-img:hover {
+      transform: scale(1.05);
+    }
+    
+    .highlight-circle {
+      position: absolute;
+      top: -5px;
+      left: -5px;
+      right: -5px;
+      bottom: -5px;
+      border-radius: 50%;
+      border: 2px solid rgba(231, 76, 60, 0.4);
+      animation: pulse 4s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.05); opacity: 0.3; }
+      100% { transform: scale(1); opacity: 0.5; }
+    }
+    
+    .profile-name {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--highlight);
+      margin-bottom: 10px;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    }
+    
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin: 15px 0;
+      width: 80%;
+      flex-wrap: wrap;
+    }
+    
+    .social-icon {
+      width: 35px;
+      height: 35px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(145deg, rgba(184, 175, 128, 0.4), rgba(173, 162, 124, 0.4));
+      border-radius: 50%;
+      color: var(--light-color);
+      font-size: 15px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+    
+    .social-icon:hover {
+      transform: translateY(-3px) scale(1.1);
+      box-shadow: 0 7px 15px rgba(0, 0, 0, 0.3);
+      background: linear-gradient(145deg, rgba(231, 76, 60, 0.6), rgba(155, 89, 182, 0.6));
+      color: rgb(255, 255, 255);
+    }
+    
+    .about-me {
+      background: rgba(51, 51, 51, 0.26);
+      border-radius: 20px;
+      padding: 20px;
+      position: relative;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      line-height: 1.6;
+      width: 90%;
+      max-height: 180px;
+      overflow-y: auto;
+      margin-top: 5px;
+      border: 1px solid rgba(0, 0, 0, 0.3);
+    }
+     
+    .about-me::-webkit-scrollbar {
+      width: 5px;
+    }
+    
+    .about-me::-webkit-scrollbar-track {
+      background: rgba(255, 224, 158, 0.281);
+      border-radius: 10px;
+    }
+    
+    .about-me::-webkit-scrollbar-thumb {
+      background: rgba(245, 230, 162, 0.5);
+      border-radius: 10px;
+    }
+    
+    .about-me h2 {
+      margin-bottom: 10px;
+      font-size: 20px;
+      color: var(--highlight);
+      position: relative;
+      display: inline-block;
+    }
+    
+    .about-me h2::after {
+      content: "";
+      position: absolute;
+      bottom: -3px;
+      left: 25%;
+      width: 50%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--secondary-color), transparent);
+    }
+    
+    .about-me p {
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    
+    .glow-effect {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at center, rgba(52, 152, 219, 0.2) 0%, rgba(155, 89, 182, 0.1) 40%, rgba(231, 76, 60, 0) 70%);
+      animation: glow 5s infinite alternate;
+      z-index: 1;
+    }
+    
+    @keyframes glow {
+      0% { opacity: 0.3; }
+      100% { opacity: 0.7; }
+    }
+    
+    .orbit {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 1px dashed rgba(231, 76, 60, 0.2);
+      animation: spin 30s linear infinite;
+    }
+    
+    .orbit:nth-child(1) {
+      width: 90%;
+      height: 90%;
+      top: 5%;
+      left: 5%;
+    }
+    
+    .orbit:nth-child(2) {
+      width: 95%;
+      height: 95%;
+      top: 2.5%;
+      left: 2.5%;
+      border: 1px dashed rgba(155, 89, 182, 0.2);
+      animation-duration: 40s;
+      animation-direction: reverse;
+    }
+    
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    /* تأثير إضافي للدائرة عند التفاعل */
+    .container.animated {
+      animation: bounce 0.7s ease-in-out;
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+    
+    /* تأثير التسجيل */
+    @keyframes score {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.5); opacity: 0.5; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    
+    .score-effect {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 36px;
+      font-weight: bold;
+      color: gold;
+      text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1000;
+    }
+    
+    .score-effect.show {
+      animation: score-anim 1s forwards;
+    }
+    
+    @keyframes score-anim {
+      0% { opacity: 0; transform: translate(-50%, 0); }
+      20% { opacity: 1; transform: translate(-50%, -20px); }
+      80% { opacity: 1; transform: translate(-50%, -60px); }
+      100% { opacity: 0; transform: translate(-50%, -80px); }
+    }
+    
+    /* لوحة التحكم المعدلة */
+    .admin-panel {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.9);
+      padding: 15px;
+      border-radius: 15px;
+      z-index: 10000;
+      width: 300px;
+      display: none;
+      border: 2px solid #9b59b6;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+    }
+    
+    .admin-panel h3 {
+      color: #f0e1ba;
+      text-align: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #daca85;
+    }
+    
+    .admin-input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: 1px solid #daca85;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      font-family: 'Tajawal', sans-serif;
+    }
+    
+    .admin-btn {
+      padding: 8px 15px;
+      margin: 5px 0;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-family: 'Tajawal', sans-serif;
+      transition: all 0.3s;
+      width: 100%;
+    }
+    
+    .save-btn {
+      background: #2ecc71;
+      color: white;
+    }
+    
+    .delete-btn {
+      background: #e74c3c;
+      color: white;
+    }
+    
+    .add-btn {
+      background: #3498db;
+      color: white;
+    }
+    
+    .edit-mode .editable {
+      background: rgba(155, 89, 182, 0.2);
+      border-radius: 5px;
+      padding: 5px;
+      outline: 2px dashed rgba(155, 89, 182, 0.5);
+    }
+    
+    .social-edit-panel {
+      display: none;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      border-radius: 10px;
+      margin: 10px 0;
+    }
+    
+    .edit-mode .social-edit-panel {
+      display: block;
+    }
+    
+    .social-input {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+      border-radius: 5px;
+      border: 1px solid #daca85;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      font-family: 'Tajawal', sans-serif;
+    }
+    
+    .social-link-item {
+      margin-bottom: 10px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 5px;
+    }
+    
+    .link-controls {
+      display: flex;
+      gap: 5px;
+      margin-top: 5px;
+    }
+    
+    .link-controls button {
+      flex: 1;
+      padding: 5px;
+    }
+    
+    /* أنماط أزرار التصويت */
+    .reactions {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 15px;
+      width: 100%;
+    }
+    
+    .like-btn, .dislike-btn {
+      padding: 8px 15px;
+      border: none;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 14px;
+      min-width: 80px;
+      justify-content: center;
+    }
+    
+    .like-btn {
+      background: rgba(46, 204, 113, 0.2);
+      color: #2ecc71;
+      border: 1px solid #2ecc71;
+    }
+    
+    .dislike-btn {
+      background: rgba(231, 76, 60, 0.2);
+      color: #e74c3c;
+      border: 1px solid #e74c3c;
+    }
+    
+    .like-btn:hover {
+      background: rgba(46, 204, 113, 0.4);
+    }
+    
+    .dislike-btn:hover {
+      background: rgba(231, 76, 60, 0.4);
+    }
+    
+    .like-btn.active {
+      background: #2ecc71;
+      color: white;
+    }
+    
+    .dislike-btn.active {
+      background: #e74c3c;
+      color: white;
+    }
+    
+    .like-animation {
+      animation: likePulse 0.5s ease-out;
+    }
+    
+    @keyframes likePulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    
+    /* أنماط عداد الزوار */
+    .visitors-counter {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 8px 15px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      margin-top: 15px;
+      border: 1px solid var(--secondary-color);
+      width: 100%;
+      justify-content: center;
+    }
+    
+    .visitors-counter i {
+      color: var(--accent-color);
+    }
+    
+    .stats-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      margin-top: 10px;
+    }
+    
+    /* مؤشر الجيروسكوب */
+    .gyro-indicator {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      z-index: 1000;
+      display: none;
+      backdrop-filter: blur(5px);
+      border: 1px solid var(--accent-color);
+    }
+    
+    .gyro-indicator i {
+      margin-left: 5px;
+    }
+    
+    /* تأثيرات الجيروسكوب */
+    .gyro-active {
+      transition: transform 0.1s linear;
+    }
+    
+    @media (max-width: 600px) {
+      .container {
+        width: 95%;
+        max-width: 350px;
+      }
+      
+      .profile-img-container {
+        width: 120px;
+        height: 120px;
+      }
+      
+      .profile-name {
+        font-size: 18px;
+      }
+      
+      .about-me {
+        max-height: 120px;
+        padding: 15px;
+      }
+      
+      .about-me h2 {
+        font-size: 18px;
+      }
+      
+      .about-me p {
+        font-size: 12px;
+      }
+      
+      .social-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 12px;
+      }
+      
+      .container.basketball-mode {
+        width: 80px;
+        height: 80px;
+      }
+      
+      .ball-shadow {
+        width: 80px;
+      }
+      
+      .basketball-hoop {
+        width: 150px;
+        height: 120px;
+        right: 20px;
+        top: 100px;
+      }
+      
+      .hoop-target {
+        width: 60px;
+        height: 10px;
+        top: 64px;
+        left: 45px;
+      }
+      
+      .admin-panel {
+        width: 90%;
+        right: 5%;
+        bottom: 10px;
+      }
+      
+      .reactions {
+        gap: 10px;
+      }
+      
+      .like-btn, .dislike-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+        min-width: 70px;
+      }
+    }
+    
+    /* منع تحديد النص */
+    body {
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+    
+    /* تحسينات للشاشات الكبيرة */
+    @media (min-width: 1200px) {
+      .container {
+        max-width: 600px;
+      }
+      
+      .profile-img-container {
+        width: 180px;
+        height: 180px;
+      }
+      
+      .profile-name {
+        font-size: 24px;
+      }
+      
+      .about-me {
+        max-height: 200px;
+      }
+      
+      .about-me p {
+        font-size: 16px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+<body>
+  <!-- مؤشر الماوس المخصص -->
+  <div id="custom-cursor"></div>
+
+  <!-- مؤشر الجيروسكوب -->
+  <div class="gyro-indicator" id="gyroIndicator">
+    <i class="fas fa-mobile-alt"></i> وضع الجيروسكوب مفعل
+  </div>
+
+  
+
+  <!-- السلة -->
+  <div class="basketball-hoop">
+    <div class="hoop-target"></div>
+  </div>
+
+  <div class="container" id="circular-container">
+    <div class="orbit"></div>
+    <div class="orbit"></div>
+    <div class="glow-effect"></div>
+    
+    <div class="content-wrapper">
+      <div class="profile-section">
+        <div class="profile-img-container" data-hover="true">
+          <div class="highlight-circle"></div>
+          <img class="profile-img" src="my.png" alt="الصورة الشخصية" id="profile-image" />
+        </div>
+
+        <div class="profile-name editable">مكافح</div>
+        
+        <div class="social-icons">
+          <a href="https://www.paypal.com/donate?hosted_button_id=3J4K85HF5PXS4" class="social-icon" data-hover="true" target="_blank">
+            <i class="fab fa-paypal"></i>
+          </a>
+          <a href="https://www.instagram.com/mokaf7music/#" class="social-icon" data-hover="true" target="_blank">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="https://discord.com/invite/NE6vdDaS97" class="social-icon" data-hover="true" target="_blank">
+            <i class="fab fa-discord"></i>
+          </a>
+          <a href="https://www.youtube.com/@MoKaF7_Music" class="social-icon" data-hover="true" target="_blank">
+            <i class="fab fa-youtube"></i>
+          </a>
+        </a>
+        <a href="http://kick.com/mokaf7" class="social-icon" data-hover="true" target="_blank">
+          <i class="fa-brands fa-kickstarter"></i>
+        </a>
+
+      </a>
+      <a href="https://www.tiktok.com/@mokaf7music" class="social-icon" data-hover="true" target="_blank">
+        <i class="fab fa-tiktok"></i>
+      </a>
+
+
+        </div>
+
+        <div class="about-me" data-hover="true">
+          <h2>نبذة عني</h2>
+          <p class="editable">
+            مكافح من دولة فلسطين العظمى
+          </p>
+          <p class="editable">
+            🎮رابر وصانع محتوى🎤
+        </p>
+        </div>
+        
+        <div class="stats-container">
+
+          </div>
+          
+          <!-- أزرار التصويت -->
+          <div class="reactions">
+            </button>
+            
+            
+              
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ball-shadow"></div>
+  </div>
+
+  <!-- لوحة التحكم المعدلة -->
+  <div class="admin-panel" id="adminPanel">
+    <h3>لوحة التحكم</h3>
+    
+    <div class="form-group">
+      <label for="nameInput" style="color: #daca85; display: block; margin-bottom: 5px;">الاسم:</label>
+      <input type="text" id="nameInput" class="admin-input" placeholder="أدخل الاسم الجديد">
+    </div>
+    
+    <div class="form-group">
+      <label for="aboutInput" style="color: #daca85; display: block; margin-bottom: 5px;">نبذة عني:</label>
+      <textarea id="aboutInput" class="admin-input" rows="3" placeholder="أدخل النبذة الجديدة"></textarea>
+    </div>
+    
+    <div class="social-edit-panel">
+      <h4 style="color: #daca85; margin-bottom: 10px;">روابط التواصل الاجتماعي:</h4>
+      <div id="socialLinksContainer"></div>
+      
+      <div class="link-controls">
+        <button class="admin-btn add-btn" id="addSocialBtn">
+          <i class="fas fa-plus"></i> إضافة منصة
+        </button>
+      </div>
+    </div>
+    
+    <div class="admin-controls">
+      <button class="admin-btn save-btn" id="saveBtn">
+        <i class="fas fa-save"></i> حفظ التغييرات
+      </button>
+      <button class="admin-btn delete-btn" id="exitAdminBtn">
+        <i class="fas fa-times"></i> إغلاق
+      </button>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+
+  <script>
+    // تهيئة Firebase
+    const firebaseConfig = {
+  apiKey: "AIzaSyAgFo4WsId96Q5-xuL-QB_9_ocQN8vIcyo",
+  authDomain: "mokaf7-cf90c.firebaseapp.com",
+  projectId: "mokaf7-cf90c",
+  storageBucket: "mokaf7-cf90c.firebasestorage.app",
+  messagingSenderId: "184915942011",
+  appId: "1:184915942011:web:2089c38e914c85564a20de",
+  measurementId: "G-2B1YSN2EGB"
+};
+    
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // كلمة السر الجديدة
+    
+    let isAdmin = false;
+    let keySequence = [];
+    let isGyroActive = false;
+    let lastGyroUpdate = 0;
+    let gyroTimeout;
+     
+    // عناصر التحكم
+    const customCursor = document.getElementById('custom-cursor');
+    const container = document.getElementById('circular-container');
+    const adminPanel = document.getElementById('adminPanel');
+    const saveBtn = document.getElementById('saveBtn');
+    const addSocialBtn = document.getElementById('addSocialBtn');
+    const exitAdminBtn = document.getElementById('exitAdminBtn');
+    const socialLinksContainer = document.getElementById('socialLinksContainer');
+    const socialIcons = document.querySelector('.social-icons');
+    const nameInput = document.getElementById('nameInput');
+    const aboutInput = document.getElementById('aboutInput');
+    const profileName = document.querySelector('.profile-name');
+    const aboutText = document.querySelector('.about-me p');
+    const gyroIndicator = document.getElementById('gyroIndicator');
+
+    // ==================== نظام التحكم السري ====================
+    document.addEventListener('keydown', (e) => {
+      keySequence.push(e.key.toLowerCase());
+      if (keySequence.length > ADMIN_PASSWORD.length) {
+        keySequence.shift();
+      }
+      
+      if (keySequence.join('') === ADMIN_PASSWORD) {
+        activateAdminMode();
+        keySequence = [];
+      }
+    });
+
+    // تفعيل وضع المدير
+    function activateAdminMode() {
+      isAdmin = true;
+      document.body.classList.add('edit-mode');
+      adminPanel.style.display = 'block';
+      
+      // تحميل البيانات الحالية للتعديل
+      nameInput.value = profileName.textContent;
+      aboutInput.value = aboutText.textContent;
+      
+      // تحميل روابط التواصل الحالية للتعديل
+      loadSocialLinksForEditing();
+    }
+
+    // تعطيل وضع المدير
+    function deactivateAdminMode() {
+      isAdmin = false;
+      document.body.classList.remove('edit-mode');
+      adminPanel.style.display = 'none';
+    }
+
+    // تحميل روابط التواصل للتعديل
+    function loadSocialLinksForEditing() {
+      socialLinksContainer.innerHTML = '';
+      
+      document.querySelectorAll('.social-icon').forEach((icon, index) => {
+        const platform = icon.querySelector('i').className.split(' ')[1];
+        const url = icon.href;
+        
+        const linkDiv = document.createElement('div');
+        linkDiv.className = 'social-link-item';
+        linkDiv.innerHTML = `
+          <select class="social-input platform-select" data-index="${index}">
+            <option value="fab fa-twitter" ${platform === 'fa-twitter' ? 'selected' : ''}>تويتر</option>
+            <option value="fab fa-instagram" ${platform === 'fa-instagram' ? 'selected' : ''}>إنستغرام</option>
+            <option value="fab fa-discord" ${platform === 'fa-discord' ? 'selected' : ''}>ديسكورد</option>
+            <option value="fab fa-youtube" ${platform === 'fa-youtube' ? 'selected' : ''}>يوتيوب</option>
+            <option value="fab fa-facebook" ${platform === 'fa-facebook' ? 'selected' : ''}>فيسبوك</option>
+            <option value="fab fa-tiktok" ${platform === 'fa-tiktok' ? 'selected' : ''}>تيك توك</option>
+            <option value="fab fa-snapchat" ${platform === 'fa-snapchat' ? 'selected' : ''}>سناب شات</option>
+            <option value="fab fa-linkedin" ${platform === 'fa-linkedin' ? 'selected' : ''}>لينكدإن</option>
+            <option value="fab fa-github" ${platform === 'fa-github' ? 'selected' : ''}>جيت هاب</option>
+            <option value="fab fa-whatsapp" ${platform === 'fa-whatsapp' ? 'selected' : ''}>واتساب</option>
+            <option value="fab fa-pinterest" ${platform === 'fa-pinterest' ? 'selected' : ''}>بينتريست</option>
+          </select>
+          <input type="text" class="social-input url-input" value="${url}" placeholder="رابط المنصة" data-index="${index}">
+          <div class="link-controls">
+            <button class="admin-btn delete-btn" onclick="removeSocialLink(this)" style="background: #e74c3c;">
+              <i class="fas fa-trash"></i> حذف
+            </button>
+          </div>
+        `;
+        
+        socialLinksContainer.appendChild(linkDiv);
+      });
+    }
+
+    // حذف رابط تواصل
+    function removeSocialLink(button) {
+      const linkItem = button.closest('.social-link-item');
+      linkItem.remove();
+    }
+
+    // حفظ التغييرات
+    saveBtn.addEventListener('click', () => {
+      // تحديث الاسم والنبذة
+      profileName.textContent = nameInput.value;
+      aboutText.textContent = aboutInput.value;
+      
+      // مسح روابط التواصل القديمة
+      socialIcons.innerHTML = '';
+      
+      // إضافة روابط التواصل الجديدة
+      document.querySelectorAll('#socialLinksContainer .social-link-item').forEach(linkItem => {
+        const platform = linkItem.querySelector('.platform-select').value;
+        const url = linkItem.querySelector('.url-input').value;
+        
+        if (url) {
+          const newIcon = document.createElement('a');
+          newIcon.className = 'social-icon';
+          newIcon.href = url;
+          newIcon.target = '_blank';
+          newIcon.setAttribute('data-hover', 'true');
+          newIcon.innerHTML = `<i class="${platform}"></i>`;
+          socialIcons.appendChild(newIcon);
+        }
+      });
+      
+      alert('تم حفظ التغييرات بنجاح!');
+      deactivateAdminMode();
+    });
+
+    // إضافة منصة جديدة
+    addSocialBtn.addEventListener('click', () => {
+      const newLinkDiv = document.createElement('div');
+      newLinkDiv.className = 'social-link-item';
+      const newIndex = document.querySelectorAll('.social-link-item').length;
+      
+      newLinkDiv.innerHTML = `
+        <select class="social-input platform-select" data-index="${newIndex}">
+          <option value="fab fa-twitter">تويتر</option>
+          <option value="fab fa-instagram">إنستغرام</option>
+          <option value="fab fa-discord">ديسكورد</option>
+          <option value="fab fa-youtube">يوتيوب</option>
+          <option value="fab fa-facebook">فيسبوك</option>
+          <option value="fab fa-tiktok">تيك توك</option>
+          <option value="fab fa-snapchat">سناب شات</option>
+          <option value="fab fa-linkedin">لينكدإن</option>
+          <option value="fab fa-github">جيت هاب</option>
+          <option value="fab fa-whatsapp">واتساب</option>
+          <option value="fab fa-telegram">تلغرام</option>
+          <option value="fab fa-reddit">ريديت</option>
+          <option value="fab fa-pinterest">بينتريست</option>
+        </select>
+        <input type="text" class="social-input url-input" placeholder="رابط المنصة" data-index="${newIndex}">
+        <div class="link-controls">
+          <button class="admin-btn delete-btn" onclick="removeSocialLink(this)" style="background: #e74c3c;">
+            <i class="fas fa-trash"></i> حذف
+          </button>
+        </div>
+      `;
+      
+      socialLinksContainer.appendChild(newLinkDiv);
+    });
+
+    // إغلاق لوحة التحكم
+    exitAdminBtn.addEventListener('click', deactivateAdminMode);
+
+    // ==================== إعداد المؤشر المخصص ====================
+    document.addEventListener('mousemove', function(e) {
+      customCursor.style.left = e.clientX + 'px';
+      customCursor.style.top = e.clientY + 'px';
+      
+      const hoveredElement = document.elementFromPoint(e.clientX, e.clientY);
+      
+      if (hoveredElement && hoveredElement.closest('[data-hover="true"]')) {
+        customCursor.classList.add('hover');
+      } else {
+        customCursor.classList.remove('hover');
+      }
+    });
+
+    document.addEventListener('mousedown', function(e) {
+      if (e.button === 0) {
+        customCursor.classList.add('click');
+      }
+    });
+
+    document.addEventListener('mouseup', function(e) {
+      if (e.button === 0) {
+        customCursor.classList.remove('click');
+      }
+    });
+
+    // ==================== حركة الدائرة مع الماوس/الجيروسكوب ====================
+    function updateContainerPosition(x, y) {
+      const containerRect = container.getBoundingClientRect();
+      const containerCenterX = containerRect.left + containerRect.width / 2;
+      const containerCenterY = containerRect.top + containerRect.height / 2;
+      
+      container.classList.remove('hover-top', 'hover-bottom', 'hover-left', 'hover-right');
+      
+      const distance = Math.sqrt(
+        Math.pow(x - containerCenterX, 2) + 
+        Math.pow(y - containerCenterY, 2)
+      );
+      
+      if (distance < containerRect.width * 1.2) {
+        if (y < containerCenterY - 50) {
+          container.classList.add('hover-top');
+        } else if (y > containerCenterY + 50) {
+          container.classList.add('hover-bottom');
+        }
+        
+        if (x < containerCenterX - 50) {
+          container.classList.add('hover-left');
+        } else if (x > containerCenterX + 50) {
+          container.classList.add('hover-right');
+        }
+      }
+    }
+
+    // حركة الماوس العادية
+    document.addEventListener('mousemove', function(e) {
+      if (!isGyroActive) {
+        updateContainerPosition(e.clientX, e.clientY);
+      }
+    });
+
+    // ==================== منع النقر بالزر الأيمن ====================
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+      return false;
+    });
+
+    // منع النسخ واللصق والسحب والإفلات
+    document.addEventListener('copy', function(e) {
+      e.preventDefault();
+      return false;
+    });
+
+    document.addEventListener('cut', function(e) {
+      e.preventDefault();
+      return false;
+    });
+
+    document.addEventListener('paste', function(e) {
+      e.preventDefault();
+      return false;
+    });
+
+    document.addEventListener('dragstart', function(e) {
+      e.preventDefault();
+      return false;
+    });
+
+    // دعم تفاعل اللمس
+    container.addEventListener('touchstart', function() {
+      container.classList.add('animated');
+      setTimeout(() => container.classList.remove('animated'), 700);
+    });
+
+    // ==================== نظام الجيروسكوب ====================
+    function setupGyro() {
+      if (window.DeviceOrientationEvent) {
+        window.addEventListener('deviceorientation', handleOrientation);
+      }
+    }
+
+    function handleOrientation(event) {
+      const now = Date.now();
+      if (now - lastGyroUpdate < 100) return; // تحديث كل 100ms فقط
+      lastGyroUpdate = now;
+
+      const beta = event.beta;  // الميل الأمامي/الخلفي (-180 إلى 180)
+      const gamma = event.gamma; // الميل الجانبي (-90 إلى 90)
+      
+      if (beta !== null && gamma !== null) {
+        if (!isGyroActive) {
+          isGyroActive = true;
+          gyroIndicator.style.display = 'block';
+          customCursor.style.display = 'none';
+          container.classList.add('gyro-active');
+        }
+        
+        // إعادة تعيين المهلة لإخفاء المؤشر
+        clearTimeout(gyroTimeout);
+        gyroTimeout = setTimeout(() => {
+          isGyroActive = false;
+          gyroIndicator.style.display = 'none';
+          customCursor.style.display = 'block';
+          container.classList.remove('gyro-active');
+        }, 2000);
+        
+        // تحويل قيم الجيروسكوب إلى إحداثيات الشاشة
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+        
+        // تحويل القيم (-90 إلى 90) إلى (0 إلى screenWidth/Height)
+        let x = (gamma + 90) * (screenWidth / 180);
+        let y = (beta + 90) * (screenHeight / 180);
+        
+        // التأكد من أن الإحداثيات ضمن حدود الشاشة
+        x = Math.max(0, Math.min(screenWidth, x));
+        y = Math.max(0, Math.min(screenHeight, y));
+        
+        updateContainerPosition(x, y);
+      }
+    }
+
+    // ==================== نظام عداد الزوار مع Firebase ====================
+    function updateVisitorCount() {
+      const visitorId = localStorage.getItem('visitorId') || 
+                       'visitor_' + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem('visitorId', visitorId);
+      
+      const today = new Date().toDateString();
+      const lastVisit = localStorage.getItem('lastVisit');
+      
+      if (lastVisit !== today) {
+        const visitorsRef = database.ref('visitors');
+        
+        visitorsRef.transaction((currentData) => {
+          const data = currentData || { count: 0, visitors: {} };
+          if (!data.visitors[visitorId] || data.visitors[visitorId] !== today) {
+            data.count = (data.count || 0) + 1;
+            data.visitors[visitorId] = today;
+          }
+          return data;
+        });
+        
+        localStorage.setItem('lastVisit', today);
+      }
+
+      // مراقبة التغييرات في الوقت الحقيقي
+      database.ref('visitors/count').on('value', (snapshot) => {
+        document.getElementById('visitorCount').textContent = snapshot.val() || 0;
+      });
+    }
+
+    // ==================== نظام الإعجاب مع Firebase ====================
+    function setupReactions() {
+      const userId = localStorage.getItem('userReactionId') || 
+                    'user_' + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem('userReactionId', userId);
+
+      const reactionsRef = database.ref('reactions');
+      
+      // مراقبة التغييرات في الوقت الحقيقي
+      reactionsRef.on('value', (snapshot) => {
+        const data = snapshot.val() || { likes: 0, dislikes: 0, likedBy: {}, dislikedBy: {} };
+        
+        document.getElementById('likeCount').textContent = data.likes || 0;
+        document.getElementById('dislikeCount').textContent = data.dislikes || 0;
+        
+        // تحديث حالة الأزرار
+        const likeBtn = document.getElementById('likeBtn');
+        const dislikeBtn = document.getElementById('dislikeBtn');
+        
+        likeBtn.classList.toggle('active', data.likedBy && data.likedBy[userId]);
+        dislikeBtn.classList.toggle('active', data.dislikedBy && data.dislikedBy[userId]);
+      });
+    }
+
+    // استدعاء الدوال عند تحميل الصفحة
+    window.addEventListener('DOMContentLoaded', () => {
+      updateVisitorCount();
+      setupReactions();
+      setupGyro();
+    });
+  </script>
+</body>
+</html>
