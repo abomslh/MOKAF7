@@ -6,42 +6,56 @@
   <title>MOKAF7</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap');
+    :root { --primary-color: #f0e1ba; --secondary-color: #daca85; --accent-color: #9b59b6; --light-color: #ecf0f1; --highlight: #fdfdfd; --dark-overlay: rgba(255, 239, 187, 0.87); }
+    * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; }
+    body { font-family: 'Tajawal', sans-serif; color: var(--light-color); min-height: 100vh; display: flex; justify-content: center; align-items: center; text-align: center; padding: 20px; background-image: url('msl7.png'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed; overflow: hidden; touch-action: manipulation; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; }
+    #custom-cursor { position: fixed; width: 40px; height: 40px; background-image: url('hand-cursor.png'); background-size: contain; background-repeat: no-repeat; pointer-events: none; z-index: 99999; transition: transform 0.05s ease; }
+    #custom-cursor.hover { background-image: url('hand-pointer.png'); transform: scale(1.2); }
+    #custom-cursor.click { background-image: url('hand-click.png'); transform: scale(0.9); }
+    .container { width: 90%; max-width: 550px; height: auto; aspect-ratio: 1/1; position: relative; border-radius: 50%; overflow: hidden; box-shadow: 0 0 50px rgba(0,0,0,0.5); transition: transform 0.6s cubic-bezier(0.3,0.7,0.4,1.5), width 0.6s, height 0.6s; background: radial-gradient(circle, var(--dark-overlay) 0%, rgba(95,79,74,0.781) 100%); backdrop-filter: blur(10px); transform-style: preserve-3d; perspective: 1000px; margin: 20px; display: flex; justify-content: center; align-items: center; }
+    .power-line { position: absolute; height: 3px; background: linear-gradient(90deg,rgba(255,255,255,0.8),rgba(255,255,255,0.2)); transform-origin: 0 0; display: none; z-index: 100; }
+    .play-button { position: fixed; top: 20px; right: 20px; width: 60px; height: 60px; background: rgb(218,202,158); border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index: 100; transition: all 0.3s ease; }
+    .play-button::before { content: ""; width: 0; height: 0; border-top: 15px solid transparent; border-bottom: 15px solid transparent; border-left: 25px solid white; margin-left: 5px; }
+    .play-button:hover { transform: scale(1.1); background: rgb(153,75,153); }
+    .hoop-target { position: absolute; width: 80px; height: 10px; top: 86px; left: 60px; background: rgba(255,0,0,0); z-index: 51; }
+    .container.hover-top { transform: perspective(1000px) rotateX(8deg); }
+    .container.hover-bottom { transform: perspective(1000px) rotateX(-8deg); }
+    .container.hover-left { transform: perspective(1000px) rotateY(-8deg); }
+    .container.hover-right { transform: perspective(1000px) rotateY(8deg); }
+    .container:hover { box-shadow: 0 0 80px rgba(0,0,0,0.4); }
+    .container::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at center,rgba(221,203,144,0.1) 0%,rgba(155,89,182,0.05) 40%,transparent 70%); z-index: 0; border-radius: 50%; }
+    .content-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(1); width: 85%; height: 85%; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2; transition: opacity 0.5s ease; overflow: hidden; }
+    .profile-section { width: 100%; position: relative; display: flex; flex-direction: column; align-items: center; }
+    .profile-img-container { width: 160px; height: 160px; margin-bottom: 10px; position: relative; border-radius: 50%; background: rgba(0,0,0,0.2); box-shadow: 0 10px 20px rgba(0,0,0,0.2),inset 0 0 15px rgba(236,1,1,0.2); padding: 5px; overflow: hidden; border: 2px solid rgba(214,181,33,0.5); }
+    .profile-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 2px solid var(--secondary-color); transition: transform 0.3s ease; }
+    .profile-img:hover { transform: scale(1.05); }
+    .highlight-circle { position: absolute; top: -5px; left: -5px; right: -5px; bottom: -5px; border-radius: 50%; border: 2px solid rgba(231,76,60,0.4); animation: pulse 4s infinite; }
+    @keyframes pulse { 0% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.05); opacity: 0.3; } 100% { transform: scale(1); opacity: 0.5; } }
+    .profile-name { font-size: 22px; font-weight: 700; color: var(--highlight); margin-bottom: 10px; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); }
+    .social-icons { display: flex; justify-content: center; align-items: center; gap: 12px; margin: 15px 0; width: 80%; flex-wrap: wrap; }
+    .social-icon { width: 35px; height: 35px; display: flex; justify-content: center; align-items: center; background: linear-gradient(145deg,rgba(184,175,128,0.4),rgba(173,162,124,0.4)); border-radius: 50%; color: var(--light-color); font-size: 15px; transition: all 0.3s ease; box-shadow: 0 4px 8px rgba(0,0,0,0.2); border: 1px solid rgba(0,0,0,0.3); position: relative; }
+    .social-icon:hover { transform: translateY(-3px) scale(1.1); box-shadow: 0 7px 15px rgba(0,0,0,0.3); background: linear-gradient(145deg,rgba(231,76,60,0.6),rgba(155,89,182,0.6)); color: #fff; }
+    .about-me { background: rgba(51,51,51,0.26); border-radius: 20px; padding: 20px; position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.3); text-align: center; line-height: 1.6; width: 90%; max-height: 180px; overflow-y: auto; margin-top: 5px; border: 1px solid rgba(0,0,0,0.3); }
+    .about-me::-webkit-scrollbar { width: 5px; }
+    .about-me::-webkit-scrollbar-track { background: rgba(255,224,158,0.281); border-radius: 10px; }
+    .about-me::-webkit-scrollbar-thumb { background: rgba(245,230,162,0.5); border-radius: 10px; }
+    .about-me h2 { margin-bottom: 10px; font-size: 20px; color: var(--highlight); position: relative; display: inline-block; }
+    .about-me h2::after { content: ""; position: absolute; bottom: -3px; left: 25%; width: 50%; height: 2px; background: linear-gradient(90deg,transparent,var(--secondary-color),transparent); }
+    .about-me p { font-size: 14px; margin-bottom: 8px; }
+    .glow-effect { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: radial-gradient(ellipse at center,rgba(52,152,219,0.2) 0%,rgba(155,89,182,0.1) 40%,rgba(231,76,60,0) 70%); animation: glow 5s infinite alternate; z-index: 1; }
+    @keyframes glow { 0% { opacity: 0.3; } 100% { opacity: 0.7; } }
+    .orbit { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; border: 1px dashed rgba(231,76,60,0.2); animation: spin 30s linear infinite; }
+    .orbit:nth-child(1) { width: 90%; height: 90%; top: 5%; left: 5%; }
+    .orbit:nth-child(2) { width: 95%; height: 95%; top: 2.5%; left: 2.5%; border: 1px dashed rgba(155,89,182,0.2); animation-duration: 40s; animation-direction: reverse; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .container.animated { animation: bounce 0.7s ease-in-out; }
+    @keyframes bounce { 0%,100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+    @keyframes score { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } 100% { transform: scale(1); opacity: 1; } }
+    .score-effect { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); font-size: 36px; font-weight: bold; color: gold; text-shadow: 0 0 10px rgba(0,0,0,0.5); opacity: 0; pointer-events: none; z-index: 1000; }
+    .score-effect.show { animation: score-anim 1s forwards; }
+    @keyframes score-anim { 0% { opacity: 0; transform: translate(-50%,0); } 20% { opacity: 1; transform: translate(-50%,-20px); } 80% { opacity: 1; transform: translate(-50%,-60px); } 100% { opacity: 0; transform: translate(-50%,-80px); } }
+    .admin-panel { position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.9); padding: 15px; border-radius: 15px; z-index: 10000; width: 300px; display: none; border: 2px solid #9b59b6; box-shadow: 0 0 20px rgba(0,0,0,0.7); }
     
-    :root {
-      --primary-color: #f0e1ba;
-      --secondary-color: #daca85;
-      --accent-color: #9b59b6;
-      --light-color: #ecf0f1;
-      --highlight: #fdfdfd;
-      --dark-overlay: rgba(255, 239, 187, 0.87);
-    }
-    
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      cursor: none !important;
-    }
-    
-    body {
-      font-family: 'Tajawal', sans-serif;
-      color: var(--light-color);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 20px;
-      background-image: url('msl7.png');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      overflow: hidden;
-      touch-action: manipulation;
-    }
-    
-    /* مؤشر الماوس المخصص */
     #custom-cursor {
       position: fixed;
       width: 40px;
@@ -79,6 +93,9 @@
       transform-style: preserve-3d;
       perspective: 1000px;
       margin: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     
     
@@ -174,7 +191,7 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%) scale(1);
       width: 85%;
       height: 85%;
       display: flex;
@@ -183,6 +200,7 @@
       align-items: center;
       z-index: 2;
       transition: opacity 0.5s ease;
+      overflow: hidden;
     }
     
     .profile-section {
@@ -646,8 +664,9 @@
     
     @media (max-width: 600px) {
       .container {
-        width: 95%;
-        max-width: 350px;
+        width: 90%;
+        max-width: 300px;
+        height: auto;
       }
       
       .profile-img-container {
@@ -718,6 +737,25 @@
       }
     }
     
+    @media (max-width: 400px) {
+      .container {
+        max-width: 250px;
+      }
+      
+      .profile-img-container {
+        width: 80px;
+        height: 80px;
+      }
+      
+      .profile-name {
+        font-size: 14px;
+      }
+      
+      .about-me {
+        max-height: 80px;
+      }
+    }
+    
     /* منع تحديد النص */
     body {
       user-select: none;
@@ -726,7 +764,6 @@
       -ms-user-select: none;
     }
     
-    /* تحسينات للشاشات الكبيرة */
     @media (min-width: 1200px) {
       .container {
         max-width: 600px;
@@ -751,6 +788,7 @@
     }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link rel="preload" as="image" href="my.png" />
 </head>
 <body>
   <!-- مؤشر الماوس المخصص -->
@@ -777,7 +815,7 @@
       <div class="profile-section">
         <div class="profile-img-container" data-hover="true">
           <div class="highlight-circle"></div>
-          <img class="profile-img" src="my.png" alt="الصورة الشخصية" id="profile-image" />
+          <img class="profile-img" src="my.png" alt="الصورة الشخصية" id="profile-image" loading="eager" />
         </div>
 
         <div class="profile-name editable">مكافح</div>
