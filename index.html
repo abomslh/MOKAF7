@@ -1296,5 +1296,47 @@
       setupGyro();
     });
   </script>
+  <script>
+    (function() {
+      // منع جميع اختصارات أدوات المطورين وطرق عرض الكود
+      document.addEventListener('keydown', function(e) {
+        if (
+          e.key === 'F12' ||
+          (e.ctrlKey && e.shiftKey && (e.key.toLowerCase() === 'i' || e.key.toLowerCase() === 'j' || e.key.toLowerCase() === 'c')) ||
+          (e.ctrlKey && (e.key.toLowerCase() === 'u' || e.key.toLowerCase() === 's' || e.key.toLowerCase() === 'p'))
+        ) {
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        }
+      });
+      // منع كليك يمين
+      document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        return false;
+      });
+      document.addEventListener('mousedown', function(e) {
+        if (e.button === 2) {
+          e.preventDefault();
+          return false;
+        }
+      });
+      // منع السحب والإفلات
+      document.addEventListener('dragstart', function(e) {
+        e.preventDefault();
+        return false;
+      });
+      // منع تحديد النص
+      document.addEventListener('selectstart', function(e) {
+        e.preventDefault();
+        return false;
+      });
+      // منع النسخ
+      document.addEventListener('copy', function(e) {
+        e.preventDefault();
+        return false;
+      });
+    })();
+  </script>
 </body>
 </html>
